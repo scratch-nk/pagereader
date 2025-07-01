@@ -44,7 +44,7 @@ function readDivContent(target) {
   }
   
   if (div) {
-    return div.innerHTML;
+    return div.outerHTML;
   } else {
     return null;
   }
