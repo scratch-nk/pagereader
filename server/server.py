@@ -21,7 +21,7 @@ async def read_request(request: Request):
     data = await request.json()
     uri = data.get("uri")
     print(f"Received URI: {uri}")
-    return JSONResponse(content={"message": f"match-box, team-name"})
+    return JSONResponse(content={"message": f"FastAPI: match-box, team-name"})
 
 # To run the server, use:
 # uvicorn server.server:app --reload

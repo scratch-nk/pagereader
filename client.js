@@ -1,6 +1,7 @@
 // client.js -- Connects to FastAPI server and sends a URI
 
 async function connectToServer() {
+  console.log('Connecting to server...');
   try {
     const connectResponse = await fetch('http://localhost:8000/connect', {
       method: 'POST'
@@ -14,6 +15,7 @@ async function connectToServer() {
 }
 
 async function send_URI(uri) {
+    console.log('Send URI, get div/class:', uri);
   try {
     const readResponse = await fetch('http://localhost:8000/read', {
       method: 'POST',
