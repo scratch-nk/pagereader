@@ -1,41 +1,41 @@
 document.getElementById('readButton').addEventListener('click', function() {
+  console.log('Read button clicked');
+  // await connectToServer();
   const readButton = document.getElementById('readButton');
   const parentValue = document.getElementById('parentElement');
   const childValue = document.getElementById('childElement');
   const result = document.getElementById('result');
 
-  readButton.addEventListener('click', async function() {
-    const parentElem = parentValue.value.trim();
-    const childElem = childValue.value.trim();
+  const parentElem = parentValue.value.trim();
+  const childElem = childValue.value.trim();
+  
+  if (!parentElem) {
+    result.textContent = 'Please enter a div ID or class name.';
+    return;
+  }
+
+  try {
+    // Get the active tab
+    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
     
-    if (!parentElem) {
-      result.textContent = 'Please enter a div ID or class name.';
-      return;
-    }
+    // Execute content script to read the div
+    const results = await chrome.scripting.executeScript({
+      target: { tabId: tab.id },
+      func:   getAllClassElements,
+      args:   [parentElem, childElem]
+    });
 
-    try {
-      // Get the active tab
-      const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-      
-      // Execute content script to read the div
-      const results = await chrome.scripting.executeScript({
-        target: { tabId: tab.id },
-        func:   getAllClassElements,
-        args:   [parentElem, childElem]
-      });
-
-      const content = results[0].result;
-      console.log (content);
-      
-      if (content) {
-        result.textContent = prettyPrintHTML(content);
-      } else {
-        result.textContent = `No div found with ID or class "${target}"`;
-      }
-    } catch (error) {
-      result.textContent = 'Error: ' + error.message;
+    const content = results[0].result;
+    console.log (content);
+    
+    if (content) {
+      result.textContent = prettyPrintHTML(content);
+    } else {
+      result.textContent = `No div found with ID or class "${target}"`;
     }
-  });
+  } catch (error) {
+    result.textContent = 'Error: ' + error.message;
+  }
 });
 
 // Function that will be injected into the page
@@ -87,7 +87,7 @@ function getAllClassElements(parentSelector, childSelector) {
   const parentElements = document.querySelectorAll('.' + parentSelector);
   const childElements = document.querySelectorAll('.' + childSelector);
 
-   console.log ('parent, child elements', parentElements, childElements)
+   console.log ('parent, child elements', parentSelector, childSelector);
 
   if (parentElements.length === 0) {
     console.warn('No parent elements found.');
