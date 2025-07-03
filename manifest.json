@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Page Reader",
-  "version": "0.1",
-  "description": "Read div content from any webpage",
+  "version": "0.3",
+  "description": "Read div or class child content content from any webpage",
   "permissions": [
     "activeTab",
     "scripting"

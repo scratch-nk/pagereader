@@ -1,5 +1,11 @@
 # Page Reader Browser Extension
 
+Jul 3: Reads all child content from Page when parent - child specified in box
+
+TODO: 
+. Send TLV to plugin from an Agenda
+
+-- Claude README
 A Chrome extension that allows you to read div content from any webpage.
 
 ## Installation
