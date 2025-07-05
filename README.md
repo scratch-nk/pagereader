@@ -1,9 +1,19 @@
 # Page Reader Browser Extension
 
+Read directives from agent on datum to capture  {id/class grouped,  De-ID/anon/text}
+   Read in pre-obfuscated content from NextGen screen 
+   Push to agent
+   Store and process
+
 Jul 3: Reads all child content from Page when parent - child specified in box
 
 TODO: 
-. Send TLV to plugin from an Agenda
+. Send TLV to plugin from an Agent
+. Recv obfuscated content from plugin to agent
+. Store and process using pre-existing text & logic models.
+
+
+
 
 -- Claude README
 A Chrome extension that allows you to read div content from any webpage.

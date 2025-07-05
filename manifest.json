@@ -2,20 +2,27 @@
   "manifest_version": 3,
   "name": "Page Reader",
   "version": "0.3",
-  "description": "Read div or class child content content from any webpage",
+  "description": "Read div or class child content from any webpage",
   "permissions": [
     "activeTab",
-    "scripting"
+    "scripting",
+    "tabs"
+
+  ],
+  "host_permissions": [
+    "<all_urls>"
   ],
   "action": {
     "default_popup": "popup.html",
     "default_title": "Page Reader"
+  },
+  "background": {
+    "service_worker": "background.js"
   },
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
       "js": ["content.js"]
     }
-  ],
-  "host_permissions": ["http://localhost:8000/*"]
+  ]
 }

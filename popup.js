@@ -1,44 +1,51 @@
-document.getElementById('readButton').addEventListener('click', function() {
-  console.log('Read button clicked');
+// In popup.js or a similar entry point
+document.addEventListener('DOMContentLoaded', async () => {
+  // document.getElementById('readButton').addEventListener('click', function() {
+  console.log('Read button clicked? ');
+  console.log(document.getElementById("readButton")); // Should not be null
+
   // await connectToServer();
   const readButton = document.getElementById('readButton');
   const parentValue = document.getElementById('parentElement');
   const childValue = document.getElementById('childElement');
   const result = document.getElementById('result');
 
-  const parentElem = parentValue.value.trim();
-  const childElem = childValue.value.trim();
-  
-  if (!parentElem) {
-    result.textContent = 'Please enter a div ID or class name.';
-    return;
-  }
-
-  try {
-    // Get the active tab
-    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  readButton.addEventListener('click', async function() {
+    const parentElem = parentValue.value.trim();
+    const childElem = childValue.value.trim();
     
-    // Execute content script to read the div
-    const results = await chrome.scripting.executeScript({
-      target: { tabId: tab.id },
-      func:   getAllClassElements,
-      args:   [parentElem, childElem]
-    });
-
-    const content = results[0].result;
-    console.log (content);
-    
-    if (content) {
-      result.textContent = prettyPrintHTML(content);
-    } else {
-      result.textContent = `No div found with ID or class "${target}"`;
+    if (!parentElem) {
+      result.textContent = 'Please enter a div ID or class name.';
+      return;
     }
-  } catch (error) {
-    result.textContent = 'Error: ' + error.message;
-  }
+
+    try {
+      // Get the active tab
+      const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+      
+      // Execute content script to read the div
+      const results = await chrome.scripting.executeScript({
+        target: { tabId: tab.id },
+        func:   getAllClassElements,
+        args:   [parentElem, childElem]
+      });
+
+      const content = results[0].result;
+      console.log (content);
+      
+      if (content) {
+        result.textContent = prettyPrintHTML(content);
+      } else {
+        result.textContent = `No div found with ID or class "${target}"`;
+      }
+    } catch (error) {
+      result.textContent = 'Error: ' + error.message;
+    }
+  });
 });
 
 // Function that will be injected into the page
+/*
 function readDivContent(target) {
   // Try to find by ID first, then by class
   let div = document.getElementById(target);
@@ -53,6 +60,7 @@ function readDivContent(target) {
     return null;
   }
 } 
+*/
 
 function prettyPrintHTML(htmlString) {
   const tab = '  ';
@@ -87,12 +95,12 @@ function getAllClassElements(parentSelector, childSelector) {
   const parentElements = document.querySelectorAll('.' + parentSelector);
   const childElements = document.querySelectorAll('.' + childSelector);
 
-   console.log ('parent, child elements', parentSelector, childSelector);
+  console.log ('parent, child elements', parentSelector, childSelector);
 
   if (parentElements.length === 0) {
     console.warn('No parent elements found.');
     return '<div class="match-detail">No team info available</div>';
-  } else if (childElements.lenght === 0)  {
+  } else if (childElements.length === 0)  {
     console.warn('No child elements found.');
     return '<div class="match-detail">No child available</div>';
   }
