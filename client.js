@@ -34,6 +34,6 @@ async function send_URI(uri) {
 
 // Example usage
 (async () => {
-  await connectToServer();
+//  await connectToServer();
   await send_URI("https://example.com/NextGen/edi_270_request");
 })();
