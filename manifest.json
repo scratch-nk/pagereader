@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Page Reader",
-  "version": "0.4",
+  "version": "0.6",
   "description": "Read div or class child content from any webpage",
   "permissions": [
     "activeTab",
@@ -15,9 +15,6 @@
   "action": {
     "default_popup": "popup.html",
     "default_title": "Page Reader"
-  },
-  "background": {
-    "service_worker": "background.js"
   },
   "content_scripts": [
     {

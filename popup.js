@@ -6,15 +6,15 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // await connectToServer();
   const readButton = document.getElementById('readButton');
-  const parentValue = document.getElementById('parentElement');
-  const childValue = document.getElementById('childElement');
+  const parentElem = document.getElementById('parentElement');
+  const childElem = document.getElementById('childElement');
   const result = document.getElementById('result');
 
   readButton.addEventListener('click', async function() {
-    const parentElem = parentValue.value.trim();
-    const childElem = childValue.value.trim();
+    const parenValue = parentElem.value.trim();
+    const childValue = childElem.value.trim();
     
-    if (!parentElem) {
+    if (!parenValue) {
       result.textContent = 'Please enter a div ID or class name.';
       return;
     }
@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       const results = await chrome.scripting.executeScript({
         target: { tabId: tab.id },
         func:   getAllClassElements,
-        args:   [parentElem, childElem]
+        args:   [parenValue, childValue]
       });
 
       const content = results[0].result;
@@ -91,28 +91,36 @@ function prettyPrintHTML(htmlString) {
 
 
 function getAllClassElements(parentSelector, childSelector) {
-  // Step 1: Select all elements with class 'team-info'
+  // Select all parent elements with the given class
   const parentElements = document.querySelectorAll('.' + parentSelector);
-  const childElements = document.querySelectorAll('.' + childSelector);
 
-  console.log ('parent, child elements', parentSelector, childSelector);
+  console.log('parent elements:', parentSelector, parentElements);
 
   if (parentElements.length === 0) {
     console.warn('No parent elements found.');
     return '<div class="match-detail">No team info available</div>';
-  } else if (childElements.length === 0)  {
-    console.warn('No child elements found.');
-    return '<div class="match-detail">No child available</div>';
   }
 
+  let contentHTML = '';
 
-  // Step 2: Combine outerHTML of each into a single string
-  const contentHTML = Array.from(childElements)
-    .map(el => (el.outerHTML))
-    .join('\n');
+  // For each parent, find child elements within it
+  parentElements.forEach(parent => {
+    const childElements = parent.querySelectorAll('.' + childSelector);
+    if (childElements.length === 0) {
+      contentHTML += `<div class="match-detail">No child available in parent: ${parentSelector}</div>\n`;
+    } else {
+      childElements.forEach(child => {
+        const className = child.className || '(no class)';
+        const content = child.textContent.trim();
+        if (content) {
+          contentHTML += `${className}: ${content}\n`;
+        }
+      });
+    }
+  });
 
-  // Step 3: Wrap with a div called 'match-detail'
-  const wrappedHTML = `<div class="match-detail">\n${contentHTML}\n</div>`;
+  // Wrap with a div called 'match-detail'
+  const wrappedHTML = `<pre class="match-detail">\n${contentHTML}\n</pre>`;
 
   return wrappedHTML;
 }
